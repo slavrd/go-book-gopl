@@ -8,7 +8,6 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"io"
 	"net/http"
@@ -34,9 +33,9 @@ func main() {
 			fmt.Fprintf(os.Stderr, "fetch: %v\n", err)
 			os.Exit(1)
 		}
-		respReader := bufio.NewReader(resp.Body)
+
 		fmt.Printf("Status code: %v\n", resp.StatusCode)
-		io.Copy(os.Stdout, respReader)
+		io.Copy(os.Stdout, resp.Body)
 		resp.Body.Close()
 	}
 }
