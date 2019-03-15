@@ -70,6 +70,16 @@ func main() {
 			fmt.Println("Issue created:")
 			showIssue(result)
 		}
+	case "close":
+		update := make(map[string]string)
+		update["state"] = "closed"
+		err := UpdateIssue(user, repo, num, update)
+		if err != nil {
+			fmt.Printf("Failed closing issue: %s", err)
+			os.Exit(1)
+		} else {
+			fmt.Println("Issue was closed")
+		}
 	}
 
 	// TODO: Remove when all variables are used
@@ -145,8 +155,41 @@ func OpenIssue(user, repo, title string) (*Issue, error) {
 	return &result, nil
 }
 
+// UpdateIssue the provided fields in an issue
+func UpdateIssue(user, repo string, num int, fields map[string]string) error {
+
+	url := strings.Join([]string{APIURL, "repos", user, repo, "issues", strconv.Itoa(num)}, "/")
+
+	reqBody, err := json.Marshal(fields)
+	if err != nil {
+		return err
+	}
+	buf := bytes.NewBuffer(reqBody)
+
+	req, err := http.NewRequest("PATCH", url, buf)
+	if err != nil {
+		return err
+	}
+
+	req.SetBasicAuth(os.Getenv("GHUB_USER"), os.Getenv("GHUB_TOKEN"))
+
+	client := http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("Failed updating issue: %v", resp.StatusCode)
+	}
+
+	return nil
+
+}
+
 func showUsage() {
-	fmt.Println(`Usage: github <COMMAND> [Command Arguments]:
+	fmt.Println(`Usage: github <COMMAND> [Command Arguments]
 	get | edit | close <user> <repository> <issue_number>
 	open <user> <repository> <title>
 	search [terms]`)
