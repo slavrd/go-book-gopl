@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -71,19 +72,47 @@ func main() {
 			showIssue(result)
 		}
 	case "close":
-		update := make(map[string]string)
-		update["state"] = "closed"
-		err := UpdateIssue(user, repo, num, update)
+		err := UpdateIssue(user, repo, num, map[string]string{"state": "closed"})
 		if err != nil {
 			fmt.Printf("Failed closing issue: %s", err)
 			os.Exit(1)
 		} else {
 			fmt.Println("Issue was closed")
 		}
+	case "edit":
+		issue, err := GetIssue(user, repo, num)
+		if err != nil {
+			fmt.Printf("Error getting issue: %s", err)
+			os.Exit(1)
+		}
+		update, err := getUserUpdate(issue)
+		if err != nil {
+			fmt.Printf("Error updating issue: %s", err)
+			os.Exit(1)
+		}
+		if len(update) > 0 {
+			err := UpdateIssue(user, repo, num, update)
+			if err != nil {
+				fmt.Printf("Failed updating issue: %s", err)
+				os.Exit(1)
+			}
+			fmt.Println("Issue updated.")
+		} else {
+			fmt.Println("Nothing to update.")
+		}
+	case "search":
+		result, err := SearchIssues(searchTerms)
+		if err != nil {
+			fmt.Printf("Search failed: %s", err)
+			os.Exit(1)
+		}
+		fmt.Printf("\nIssues found:\n\n")
+		for _, issue := range result.Items {
+			showIssue(issue)
+		}
+		fmt.Println()
 	}
 
-	// TODO: Remove when all variables are used
-	fmt.Println(searchTerms)
 }
 
 // GetIssue retruns the specified GitHub issue
@@ -186,6 +215,33 @@ func UpdateIssue(user, repo string, num int, fields map[string]string) error {
 
 	return nil
 
+}
+
+func getUserUpdate(issue *Issue) (map[string]string, error) {
+
+	update := make(map[string]string)
+
+	fmt.Printf("\nCurrent issue title:\n\n%s\n\nEnter new title or leave empty to keep the current: ", issue.Title)
+	reader := bufio.NewReader(os.Stdin)
+	userInput, err := reader.ReadString('\n')
+	fmt.Println("")
+	if err != nil {
+		return update, err
+	}
+
+	userInput = strings.TrimSpace(userInput)
+	if userInput != "" {
+		update["title"] = userInput
+	}
+
+	userInput, err = editText(issue.Body)
+	if err != nil {
+		return update, err
+	}
+	if issue.Body != userInput {
+		update["body"] = userInput
+	}
+	return update, nil
 }
 
 func showUsage() {
