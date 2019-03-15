@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"os/exec"
 	"strconv"
 	"strings"
 )
@@ -52,6 +53,7 @@ func main() {
 		}
 	}
 
+	// Execute the action
 	switch action {
 	case "get":
 		if result, err := GetIssue(user, repo, num); err != nil {
@@ -68,12 +70,10 @@ func main() {
 			fmt.Println("Issue created:")
 			showIssue(result)
 		}
-
 	}
 
 	// TODO: Remove when all variables are used
 	fmt.Println(searchTerms)
-	fmt.Println(title)
 }
 
 // GetIssue retruns the specified GitHub issue
@@ -107,8 +107,15 @@ func OpenIssue(user, repo, title string) (*Issue, error) {
 
 	reqBody := make(map[string]string)
 	reqBody["title"] = title
-	reqBody["body"] = "issue body"          //TODO: user need to create with text editor
-	reqBodyJSON, _ := json.Marshal(reqBody) // TODO: Handle error
+	var err error
+	reqBody["body"], err = editText("")
+	if err != nil {
+		return nil, err
+	}
+	reqBodyJSON, err := json.Marshal(reqBody)
+	if err != nil {
+		return nil, err
+	}
 	buf := bytes.NewBuffer(reqBodyJSON)
 
 	req, _ := http.NewRequest("POST", url, buf)
@@ -125,7 +132,10 @@ func OpenIssue(user, repo, title string) (*Issue, error) {
 		return nil, fmt.Errorf("issue open failed: %v", resp.StatusCode)
 	}
 
-	respBody, _ := ioutil.ReadAll(resp.Body) // TODO: Handle error
+	respBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
 	resp.Body.Close()
 	var result Issue
 	if err := json.Unmarshal(respBody, &result); err != nil {
@@ -145,4 +155,53 @@ func showUsage() {
 func showIssue(i *Issue) {
 	fmt.Printf("#%-5d %9.9s %.55s\n",
 		i.Number, i.User.Login, i.Title)
+}
+
+func editText(initialContent string) (string, error) {
+
+	// create tmp file with initial contnet
+	tmpFile, err := ioutil.TempFile("", "ghub_issue_edit_")
+	if err != nil {
+		return "", err
+	}
+
+	_, err = tmpFile.Write([]byte(initialContent))
+	if err != nil {
+		tmpFile.Close()
+		return "", err
+	}
+
+	tmpFile.Close()
+
+	// open file in text editor
+
+	textEditor := os.Getenv("EDITOR")
+	if textEditor == "" {
+		textEditor = "vim"
+	}
+
+	editorPath, err := exec.LookPath(textEditor)
+	if err != nil {
+		return "", err
+	}
+
+	cmd := exec.Cmd{
+		Path:   editorPath,
+		Args:   []string{textEditor, tmpFile.Name()},
+		Stdin:  os.Stdin,
+		Stdout: os.Stdout,
+		Stderr: os.Stderr,
+	}
+
+	err = cmd.Run()
+	if err != nil {
+		return "", err
+	}
+
+	content, err := ioutil.ReadFile(tmpFile.Name())
+	if err != nil {
+		return "", err
+	}
+
+	return string(content), nil
 }
