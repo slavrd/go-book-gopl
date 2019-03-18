@@ -43,9 +43,11 @@ func getComicsNum() (int, error) {
 
 	var comic Comic
 	if err := json.NewDecoder(resp.Body).Decode(&comic); err != nil {
+		resp.Body.Close()
 		return 0, err
 	}
 
+	resp.Body.Close()
 	return comic.Num, nil
 }
 
