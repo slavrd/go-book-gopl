@@ -73,3 +73,14 @@ func TestCopy() {
 	fmt.Printf("Set1 after calling Add(2048) on it: %s\n", s.String())
 	fmt.Printf("Set2 after calling Add(2048) on set1: %s\n", s2.String())
 }
+
+// TestAddAll demonstrates AddAll()
+func TestAddAll() {
+	fmt.Printf("\nTesting AddAll()...\n")
+	var s IntSet
+	s.Add(1)
+	s.Add(12)
+	fmt.Printf("Initial set1: %s\n", s.String())
+	s.AddAll(1024, 15, 80)
+	fmt.Printf("Set after calling AddAll(1024, 15, 80) : %s\n", s.String())
+}
