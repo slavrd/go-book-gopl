@@ -1,0 +1,75 @@
+package intset
+
+import "fmt"
+
+// TestLen demonstrates the Len()
+func TestLen() {
+
+	fmt.Printf("\nTesting Len()...\n")
+
+	var s IntSet
+	s.Add(1)
+	s.Add(12)
+	s.Add(798)
+
+	fmt.Printf("The length of set: %s is %d\n", s.String(), s.Len())
+
+	s.Add(15)
+	s.Add(1024)
+
+	fmt.Printf("The length of set: %s is %d\n", s.String(), s.Len())
+}
+
+// TestRemove demonstrates Remove()
+func TestRemove() {
+	fmt.Printf("\nTesting Remove()...\n")
+
+	var s IntSet
+	s.Add(1)
+	s.Add(12)
+	s.Add(64)
+	s.Add(798)
+	s.Add(1024)
+
+	fmt.Printf("Initial set: %s\n", s.String())
+	s.Remove(12)
+	fmt.Printf("Set after calling Remove(12): %s\n", s.String())
+	s.Remove(64)
+	fmt.Printf("Set after calling Remove(64): %s\n", s.String())
+	s.Remove(1024)
+	fmt.Printf("Set after calling Remove(1024): %s\n", s.String())
+	s.Remove(1050)
+	fmt.Printf("Set after calling Remove(1050): %s\n", s.String())
+
+}
+
+// TestClear demonstrates Clear()
+func TestClear() {
+	fmt.Printf("\nTesting Clear()...\n")
+	var s IntSet
+	s.Add(1)
+	s.Add(12)
+	s.Add(64)
+	s.Add(798)
+	s.Add(1024)
+	fmt.Printf("Initial set: %s\n", s.String())
+	s.Clear()
+	fmt.Printf("Set after calling Clear(): %s\n", s.String())
+}
+
+// TestCopy demonstrates Copy()
+func TestCopy() {
+	fmt.Printf("\nTesting Copy()...\n")
+	var s IntSet
+	s.Add(1)
+	s.Add(12)
+	s.Add(64)
+	s.Add(798)
+	s.Add(1024)
+	fmt.Printf("Initial set1: %s\n", s.String())
+	s2 := s.Copy()
+	fmt.Printf("Set2 (called Copy on set1): %s\n", s2.String())
+	s.Add(2048)
+	fmt.Printf("Set1 after calling Add(2048) on it: %s\n", s.String())
+	fmt.Printf("Set2 after calling Add(2048) on set1: %s\n", s2.String())
+}
