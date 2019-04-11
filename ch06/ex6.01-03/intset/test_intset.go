@@ -84,3 +84,44 @@ func TestAddAll() {
 	s.AddAll(1024, 15, 80)
 	fmt.Printf("Set after calling AddAll(1024, 15, 80) : %s\n", s.String())
 }
+
+// TestIntersectWith demonstrates IntersectWith()
+func TestIntersectWith() {
+	fmt.Printf("\nTesting IntersectWith()...\n")
+	var s, t IntSet
+	s.AddAll(1, 12, 145, 758)
+	t.AddAll(1, 128, 145)
+	fmt.Printf("Initial set1: %s\n", s.String())
+	fmt.Printf("Set2: %s\n", t.String())
+	s.IntersectWith(&t)
+	fmt.Printf("Set1 after intersecting with set2: %s\n", s.String())
+	s.IntersectWith(&t)
+	fmt.Printf("Set1 after second intersect with set2: %s\n", s.String())
+	t.Clear()
+	s.IntersectWith(&t)
+	fmt.Printf("Set1 after intersect with empty set: %s\n", s.String())
+}
+
+// TestDifferenceWith demonstrates DifferenceWith()
+func TestDifferenceWith() {
+	fmt.Printf("\nTesting DifferenceWith()...\n")
+	var s, t IntSet
+	s.AddAll(1, 12, 145, 758)
+	t.AddAll(1, 128, 145)
+	fmt.Printf("Initial set1: %s\n", s.String())
+	fmt.Printf("Set2: %s\n", t.String())
+	s.DifferenceWith(&t)
+	fmt.Printf("Difference of set1 with set2: %s\n", s.String())
+}
+
+// TestSymmetricDifference demonstrates SymmetricDifference()
+func TestSymmetricDifference() {
+	fmt.Printf("\nTesting SymmetricDifference()...\n")
+	var s, t IntSet
+	s.AddAll(1, 12, 145, 758)
+	t.AddAll(1, 128, 145, 1024)
+	fmt.Printf("Initial set1: %s\n", s.String())
+	fmt.Printf("Set2: %s\n", t.String())
+	s.SymmetricDifference(&t)
+	fmt.Printf("Symmetric difference of set1 with set2: %s\n", s.String())
+}

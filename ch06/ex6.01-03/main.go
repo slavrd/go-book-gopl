@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/go-book-gopl/ch06/ex6.01-02/intset"
+	"github.com/go-book-gopl/ch06/ex6.01-03/intset"
 )
 
 func main() {
@@ -10,4 +10,7 @@ func main() {
 	intset.TestClear()
 	intset.TestCopy()
 	intset.TestAddAll()
+	intset.TestIntersectWith()
+	intset.TestDifferenceWith()
+	intset.TestSymmetricDifference()
 }
