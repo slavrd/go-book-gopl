@@ -11,6 +11,8 @@ import (
 	"fmt"
 )
 
+const wordSize = 32 << (^uint(0) >> 63)
+
 //!+intset
 
 // An IntSet is a set of small non-negative integers.
@@ -21,13 +23,13 @@ type IntSet struct {
 
 // Has reports whether the set contains the non-negative value x.
 func (s *IntSet) Has(x int) bool {
-	word, bit := x/64, uint(x%64)
+	word, bit := x/wordSize, uint(x%wordSize)
 	return word < len(s.words) && s.words[word]&(1<<bit) != 0
 }
 
 // Add adds the non-negative value x to the set.
 func (s *IntSet) Add(x int) {
-	word, bit := x/64, uint(x%64)
+	word, bit := x/wordSize, uint(x%wordSize)
 	for word >= len(s.words) {
 		s.words = append(s.words, 0)
 	}
@@ -60,12 +62,12 @@ func (s *IntSet) String() string {
 		if word == 0 {
 			continue
 		}
-		for j := 0; j < 64; j++ {
+		for j := 0; j < wordSize; j++ {
 			if word&(1<<uint(j)) != 0 {
 				if buf.Len() > len("{") {
 					buf.WriteByte(' ')
 				}
-				fmt.Fprintf(&buf, "%d", 64*i+j)
+				fmt.Fprintf(&buf, "%d", wordSize*i+j)
 			}
 		}
 	}
@@ -77,7 +79,7 @@ func (s *IntSet) String() string {
 func (s *IntSet) Len() int {
 	var count int
 	for _, word := range s.words {
-		for j := 0; j < 64; j++ {
+		for j := 0; j < wordSize; j++ {
 			if word&(1<<uint(j)) != 0 {
 				count++
 			}
@@ -89,7 +91,7 @@ func (s *IntSet) Len() int {
 // Remove removes the provided x from the set
 func (s *IntSet) Remove(x int) {
 
-	word, bit := x/64, x%64
+	word, bit := x/wordSize, x%wordSize
 	if len(s.words) > word {
 		s.words[word] = s.words[word] &^ (1 << uint(bit))
 	}
@@ -157,7 +159,7 @@ func (s *IntSet) Elems() *[]int {
 	for i, word := range s.words {
 		for j := 0; word != 0; j++ {
 			if word&1 == 1 {
-				r = append(r, 64*i+j)
+				r = append(r, wordSize*i+j)
 			}
 			word >>= 1
 		}

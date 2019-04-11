@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/go-book-gopl/ch06/ex6.01-03/intset"
+	"github.com/go-book-gopl/ch06/ex6.01-05/intset"
 )
 
 func main() {
