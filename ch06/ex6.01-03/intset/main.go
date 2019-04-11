@@ -110,4 +110,22 @@ func (s *IntSet) Copy() *IntSet {
 	return &result
 }
 
+// IntersectWith sets s to the intersection of s and t
+func (s *IntSet) IntersectWith(t *IntSet) {
+
+	if len(t.words) < len(s.words) {
+		s.words = s.words[:len(t.words)]
+	}
+
+	for i, tword := range t.words {
+		if i < len(s.words) {
+			s.words[i] &= tword
+		} else {
+			s.words = s.words[:i]
+			break
+		}
+	}
+
+}
+
 //!-intset

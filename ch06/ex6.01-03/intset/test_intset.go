@@ -84,3 +84,20 @@ func TestAddAll() {
 	s.AddAll(1024, 15, 80)
 	fmt.Printf("Set after calling AddAll(1024, 15, 80) : %s\n", s.String())
 }
+
+// TestIntersectWith demonstrates IntersectWith()
+func TestIntersectWith() {
+	fmt.Printf("\nTesting IntersectWith()...\n")
+	var s, t IntSet
+	s.AddAll(1, 12, 145, 758)
+	t.AddAll(1, 128, 145)
+	fmt.Printf("Initial set1: %s\n", s.String())
+	fmt.Printf("Set2: %s\n", t.String())
+	s.IntersectWith(&t)
+	fmt.Printf("Set1 after intersecting with set2: %s\n", s.String())
+	s.IntersectWith(&t)
+	fmt.Printf("Set1 after second intersect with set2: %s\n", s.String())
+	t.Clear()
+	s.IntersectWith(&t)
+	fmt.Printf("Set1 after intersect with empty set: %s\n", s.String())
+}
