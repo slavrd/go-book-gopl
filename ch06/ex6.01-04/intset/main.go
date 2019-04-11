@@ -151,4 +151,18 @@ func (s *IntSet) SymmetricDifference(t *IntSet) {
 	}
 }
 
+// Elems returns s's elements as s slice
+func (s *IntSet) Elems() *[]int {
+	r := make([]int, 0, 0)
+	for i, word := range s.words {
+		for j := 0; word != 0; j++ {
+			if word&1 == 1 {
+				r = append(r, 64*i+j)
+			}
+			word >>= 1
+		}
+	}
+	return &r
+}
+
 //!-intset

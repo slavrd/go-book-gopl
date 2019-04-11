@@ -13,4 +13,5 @@ func main() {
 	intset.TestIntersectWith()
 	intset.TestDifferenceWith()
 	intset.TestSymmetricDifference()
+	intset.TestElems()
 }
