@@ -125,3 +125,12 @@ func TestSymmetricDifference() {
 	s.SymmetricDifference(&t)
 	fmt.Printf("Symmetric difference of set1 with set2: %s\n", s.String())
 }
+
+// TestElems demonstrates Elems()
+func TestElems() {
+	fmt.Printf("\nTesting Elems()...\n")
+	var s IntSet
+	s.AddAll(1, 12, 145, 758, 63, 64, 65, 0)
+	fmt.Printf("Set1: %s\n", s.String())
+	fmt.Printf("Elements of set1 as slice: % #v\n", s.Elems())
+}
