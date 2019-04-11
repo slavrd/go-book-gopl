@@ -128,4 +128,27 @@ func (s *IntSet) IntersectWith(t *IntSet) {
 
 }
 
+// DifferenceWith sets s to the difference with t
+func (s *IntSet) DifferenceWith(t *IntSet) {
+	for i, tword := range t.words {
+		if i < len(s.words) {
+			s.words[i] &^= tword
+		} else {
+			break
+		}
+	}
+
+}
+
+// SymmetricDifference sets s to the symmetric difference with t
+func (s *IntSet) SymmetricDifference(t *IntSet) {
+	for i, tword := range t.words {
+		if i < len(s.words) {
+			s.words[i] ^= tword
+		} else {
+			s.words = append(s.words, tword)
+		}
+	}
+}
+
 //!-intset

@@ -11,4 +11,6 @@ func main() {
 	intset.TestCopy()
 	intset.TestAddAll()
 	intset.TestIntersectWith()
+	intset.TestDifferenceWith()
+	intset.TestSymmetricDifference()
 }
