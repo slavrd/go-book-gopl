@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>My Tracks</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+	    background: lightgrey;
+    }
+    table {
+        position: relative;
+        top: 100px;
+        border-collapse: collapse;
+    }
+    tr:hover {background-color: darkgrey;}
+    th, td {
+        text-align: center;
+        vertical-align: center;
+        padding: 10px;
+    }
+    table, th, td {
+        border: 1px solid black;
+    }   
+</style>
+</head>
+<body>
+    <table>
+        <tr><th><a href="/?sort=bytitle">Title</a></th>
+            <th><a href="/?sort=byartist">Artist</a></th>
+            <th><a href="/?sort=byalbum">Album</a></th>
+            <th><a href="/?sort=byyear">Year</a></th>
+            <th><a href="/?sort=bylength">Length</a></th></tr>
+        {{range .}}<tr><td>{{.Title}}</td><td>{{.Artist}}</td><td>{{.Album}}</td><td>{{.Year}}</td><td>{{.Length}}</td></tr>{{end}}
+    </table>
+</body>
+</html>
