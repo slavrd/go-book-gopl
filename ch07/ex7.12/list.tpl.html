@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>My Tracks</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+	    background: lightgrey;
+    }
+    table {
+        position: relative;
+        top: 100px;
+        border-collapse: collapse;
+    }
+    tr:hover {background-color: darkgrey;}
+    th, td {
+        text-align: center;
+        vertical-align: center;
+        padding: 10px;
+    }
+    table, th, td {
+        border: 1px solid black;
+    }   
+</style>
+</head>
+<body>
+    <table>
+        <tr><th>Item</th>
+            <th>Price</th></tr>
+        {{range $item, $price := .}}<tr><td>{{$item}}</td><td>{{$price}}</td></tr>{{end}}
+    </table>
+</body>
+</html>
