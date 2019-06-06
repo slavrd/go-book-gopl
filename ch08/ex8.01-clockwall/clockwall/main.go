@@ -8,6 +8,7 @@ import (
 	"net"
 	"os"
 	"strings"
+	"text/tabwriter"
 	"time"
 )
 
@@ -35,8 +36,31 @@ func (c *clock) clockWatch() {
 
 // showClockWall displays the clocks
 func showClockWall(clocks []*clock) {
+	tw := new(tabwriter.Writer).Init(os.Stdout, 0, 12, 2, ' ', 0)
 	for _, c := range clocks {
-		fmt.Printf("%s: %s\n", c.loc, c.ctime.Format("15:04:05"))
+		fmt.Fprintf(tw, "%v\t", c.loc)
+	}
+	fmt.Fprintf(tw, "\n")
+	for _, c := range clocks {
+		for i := 0; i < len(c.loc); i++ {
+			fmt.Fprint(tw, "-")
+		}
+		fmt.Fprintf(tw, "\t")
+	}
+	fmt.Fprintf(tw, "\n")
+	for _, c := range clocks {
+		fmt.Fprintf(tw, "%v\t", c.ctime.Format("15:04:05"))
+	}
+	tw.Flush()
+
+	for {
+		fmt.Fprintf(tw, "\r")
+		for _, c := range clocks {
+			fmt.Fprintf(tw, "%v\t", c.ctime.Format("15:04:05"))
+		}
+		fmt.Fprintf(tw, "\t")
+		tw.Flush()
+		time.Sleep(100 * time.Millisecond)
 	}
 }
 
@@ -55,15 +79,11 @@ func main() {
 
 	// initiate clock watchers
 	for _, c := range clocks {
-		log.Printf("connecting to clock @%s", c.addr)
+		log.Printf("connecting to clock %s@%s", c.loc, c.addr)
 		go c.clockWatch()
 	}
 
 	// display the clock wall
-	for {
-		showClockWall(clocks)
-		time.Sleep(1 * time.Second)
-		fmt.Println()
-	}
-
+	fmt.Println("")
+	showClockWall(clocks)
 }
