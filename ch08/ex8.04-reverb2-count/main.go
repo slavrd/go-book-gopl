@@ -43,7 +43,7 @@ func handleConn(c *net.TCPConn) {
 //!-
 
 func main() {
-	addr, _ := net.ResolveTCPAddr("tcp", "localhost:8000") // ignorring error - the address is hardcoded
+	addr, _ := net.ResolveTCPAddr("tcp", "localhost:8000") // ignoring error - the address is hardcoded
 	l, err := net.ListenTCP("tcp", addr)
 	if err != nil {
 		log.Fatal(err)
